@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body style="width:970px; margin-left:auto; margin-right:auto;">
+    {% if password != "That email didn't exist!" and email and password %}
+        {% with messages = get_flashed_messages(category_filter=["error"]) %}
+            {% if messages %}
+            <fieldset style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:10px;">
+                <legend>Errors</legend>
+                {% for message in messages %}
+                    <p style="font-weight:bold; margin: 2px; color:red;">{{message}}</p>
+                {% endfor %}
+            </fieldset>
+            {% endif %}
+        {% endwith %}
+        <h4 style="color:blue">The program would email you a link to change your password</h4>
+        <form action="/change_password" method="POST">
+        <label>New Password: <input type="password" name="password" /></label><br>
+        <label>Confirm Password: <input type="password" name="confirm_password" /></label><br>
+        <input type="hidden" name="email" value="{{email}}" />
+        <input type="submit" value="Change Password" />
+        
+        </form>
+
+    {% else %}
+
+    <h1 style="color:red">That email doesn't exist!</h1>
+
+    {% endif %}
+
+
+    <a href="/">Click here to return</a>
+</body>
+</html>

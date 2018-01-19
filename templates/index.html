@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:gainsboro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration</title>
+</head>
+<body style="width:950px; margin-left:auto; margin-right:auto; padding-top:40px">
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+        <fieldset style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:10px;">
+            <legend>Errors</legend>
+            {% for message in messages %}
+                <p style="font-weight:bold; margin: 2px; color:red;">{{message}}</p>
+            {% endfor %}
+        </fieldset>
+        {% endif %}
+    {% endwith %}
+    {% if get_flashed_messages(category_filter=["success"])[0] %}
+            <p style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:10px; font-weight:bold; color:green;">{{ get_flashed_messages(category_filter=["success"])[0] }}</p>
+    {% endif %}
+    <fieldset style="width:400px; margin-left:auto; margin-right:auto;">
+        <legend>Register</legend>
+        <form method="post" action="/register">
+            
+            <label>First Name: <input type="text" name="fname" value="{% if get_flashed_messages(category_filter=['data']) %}{{get_flashed_messages(category_filter=['data'])[0]['fname']}}{% endif %}" placeholder="First name" /></label><br><br>
+            <label>Last Name: <input type="text" name="lname" value="{% if get_flashed_messages(category_filter=['data']) %}{{get_flashed_messages(category_filter=['data'])[0]['lname']}}{% endif %}" placeholder="Last name" /></label><br><br>
+            <label>Email: <input type="text" name="email" value="{% if get_flashed_messages(category_filter=['data']) and get_flashed_messages(category_filter=['error'])[0] != "Invalid username/password" %}{{get_flashed_messages(category_filter=['data'])[0]['email']}}{% endif %}" placeholder="Email Address" /></label><br><br>
+            <label>Password: <input type="password" name="password" placeholder="Password" /></label><br><br>
+            <label>Confirm Password: <input type="password" name="confirmPassword" placeholder="Confirm Password" /></label><br><br>
+            <input type="submit" value="Register" style="padding:5px" />
+        </form>
+    </fieldset>
+    <fieldset style="width:400px; margin-left:auto; margin-right:auto; margin-top:10px;">
+        <legend>Login</legend>
+        <form method="post" action="/login">
+        
+            <label>Email: <input type="text" name="email" value="{% if get_flashed_messages(category_filter=['data']) and get_flashed_messages(category_filter=['login'])[0] != True %}{{get_flashed_messages(category_filter=['data'])[0]['email']}}{% endif %}"  placeholder="Email Address" /></label><br><br>
+            <label>Password: <input type="password" name="password" placeholder="Password" /></label><br>
+                {% if get_flashed_messages(category_filter=['error'])[0] == "Invalid username/password" %}
+                    <br><a href="/email/{{get_flashed_messages(category_filter=['data'])[0]['email']}}">Forgot password?</a><br>
+                {% endif %}
+            <br>
+            <input type="submit" value="Login" style="padding:5px" />
+                
+        </form>
+    </fieldset>   
+</body>
+</html>

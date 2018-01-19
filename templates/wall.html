@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:gainsboro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Wall</title>
+    <style>
+        *{
+            text-decoration: none;
+        }
+        .comment{
+            margin-left:30px;
+            clear: both;
+        }
+        .message{
+            margin-bottom:30px;
+            clear: both;
+        }
+        .delete{
+            float:right;
+        }
+        .delete input{
+            padding:3px;
+        }
+        textarea{
+            width:600px;
+            height:100px;
+        }
+        label{
+            font-size:18px;
+            font-weight:bold;
+        }
+        legend{
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body style="width:950px; margin-left:auto; margin-right:auto; padding-top:40px">
+    <div style="float:left"><h1>The Wall</h1>
+    <h2>Welcome, {{session.name}}</h2></div>
+    <a style="float:right; font-weight:bold;" href="/logout">Log Out</a>
+    <hr style="clear:both">
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+        <fieldset style="width:400px; margin-left:auto; margin-right:auto; margin-bottom:10px;">
+            <legend>Errors</legend>
+            {% for message in messages %}
+                <p style="font-weight:bold; margin: 2px; color:red;">{{message}}</p>
+            {% endfor %}
+        </fieldset>
+        {% endif %}
+    {% endwith %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message"><fieldset><legend>{{message.first_name}} {{message.last_name}} - {{message.created_at}} </legend>{{message.message}}
+                <div class="delete"><form action="wall/delete_message" method="POST"><input type="hidden" name="id" value="{{message.id}}"><input type="submit" value="Delete Message" /></form></div>
+                {% if comments %}
+                    {% for comment in comments %}
+                        {% if comment.message_id == message.id %}
+                        <div class="comment"><span style="font-weight:bold;"><br >{{comment.first_name}} {{comment.last_name}} - {{comment.created_at}}</span><div class="delete" style="margin-right:290px;"><form action="wall/delete_comment" method="POST"><input type="hidden" name="id" value="{{comment.id}}"><input type="submit" value="Delete Comment" /></form></div>
+                            <br>{{comment.comment}}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                <div class="comment"><br>
+                    <form action="/wall/post_comment" method="POST"><input type="hidden" name="message_id" value="{{message.id}}" /><textarea name="comment" placeholder="Your comment"></textarea><br>
+                    <input type="submit" value="Add Comment" /><br></form>
+                </div>
+                </fieldset>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h3>Sorry there aren't any messages!</h3>
+    {% endif %}
+    <form action="wall/post_message" method="POST">
+        <label>Message:<br>
+        <textarea name="message" placeholder="Your message"></textarea></label><br>
+        <input type="submit" value="Post a message" style="padding:6px" />
+    </form>
+</body>
+</html>
